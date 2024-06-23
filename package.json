@@ -1,0 +1,19 @@
+{
+    "name": "rbaker",
+    "version": "1.0.0",
+    "description": "Backup and automation tool",
+    "main": "lib/rbaker.js",
+    "bin": {
+        "rbaker": "./bin/rbaker"
+    },
+    "scripts": {
+        "start": "node bin/rbaker"
+    },
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+        "date-fns": "^2.23.0",
+        "node-schedule": "^2.1.0",
+        "yargs": "^17.2.1"
+    }
+}

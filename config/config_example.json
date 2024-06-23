@@ -1,0 +1,31 @@
+{
+    "backupDir": "/data/backups/database",
+    "mysqlUser": "root",
+    "mysqlPassword": "example_password",
+    "ignoreDb": "(^mysql|_schema$)",
+    "keepBackupsFor": 30,
+    "rcloneConfig": "/data/rclone/config/rclone.conf",
+    "logDir": "/data/rclone/logs/",
+    "remote": "cloud:backups/live/",
+    "maxDuration": 3600,
+    "directories": [],
+    "user": "user",
+    "group": "user",
+    "mediaPaths": {
+        "tv": "/local/tv/",
+        "movies": "/local/movies/",
+        "music": "/local/music/"
+    },
+    "siteBackups": [
+        {
+            "name": "example-site",
+            "source": "/data/nginx/html/example"
+        },
+        {
+            "name": "example-tor",
+            "source": "/data/exampleup"
+        }
+    ],
+    "siteBackupDir": "/data/backups/live/site",
+    "siteBackupLog": "example-site.log"
+}
