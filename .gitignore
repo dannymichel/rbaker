@@ -1,0 +1,9 @@
+node_modules/
+config/directories.json
+config/media.json
+config/mysql.json
+config/schedule.json
+config/websites.json
+.DS_Store
+rbaker.db
+package-lock.json
