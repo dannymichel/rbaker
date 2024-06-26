@@ -30,7 +30,8 @@ function backupMySQL() {
 
       let pendingOperations = databases.length;
       databases.forEach(db => {
-        const backupFile = path.join(config.backup_dir, `${db}.sql`);
+        const timestamp = new Date().toISOString().replace(/[:.-]/g, '_');
+        const backupFile = path.join(config.backup_dir, `${db}_${timestamp}.sql`);
         const command = `mysqldump ${userOption} ${passwordOption} ${db} ${additionalOptions} > ${backupFile}`;
 
         console.log(`Backing up database: ${db}`);
