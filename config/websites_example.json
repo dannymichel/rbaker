@@ -1,0 +1,14 @@
+{
+  "sites": [
+    {
+      "source": "/var/www/example_site_1",
+      "backup_dir": "/home/example_user/backups/dev/site_1"
+    },
+    {
+      "source": "/var/www/example_site_2",
+      "backup_dir": "/home/example_user/backups/dev/site_2"
+    }
+  ],
+  "remote": "cloud:backups/dev/site/",
+  "retention_days": 10
+}

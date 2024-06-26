@@ -1,0 +1,8 @@
+{
+  "media_directories": [
+    "/local/tv",
+    "/local/movies",
+    "/local/music"
+  ],
+  "remote": "cloud:media/"
+}

@@ -1,0 +1,8 @@
+{
+  "remote": "cloud:backups/dev/",
+  "directories": [
+     "/etc/mysql",
+     "/etc/nginx",
+     "/etc/php"
+  ]
+}

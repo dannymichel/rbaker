@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "task": "backupDirectories",
+      "interval": "0 */1 * * *",
+      "timeout": 3600
+    },
+    {
+      "task": "backupMySQL",
+      "interval": "*/5 * * * *",
+      "timeout": 3600
+    },
+    {
+      "task": "moveMedia",
+      "interval": "0 0 * * *",
+      "timeout": 7200
+    },
+    {
+      "task": "backupWebsites",
+      "interval": "*/10 * * * *",
+      "timeout": 7200
+    }
+  ]
+}

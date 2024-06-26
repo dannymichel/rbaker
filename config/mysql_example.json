@@ -1,0 +1,7 @@
+{
+  "backup_dir": "/home/example_user/backups/database/",
+  "remote": "cloud:backups/dev/database/",
+  "retention_days": 10,
+  "mysql_user": "root",
+  "mysql_password": "example_password"
+}
