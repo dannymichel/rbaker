@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 require('./initConfig');
 
 const { program } = require('commander');
@@ -10,10 +12,14 @@ const moveMedia = require('./scripts/moveMedia');
 const backupWebsites = require('./scripts/backupWebsites');
 const db = require('./scripts/db');
 const scheduler = require('./scripts/scheduler');
-const path = require('path');
-const os = require('os');
 
 const configDir = path.join(os.homedir(), '.config', 'rbaker');
+const rcloneConfigPath = path.join(configDir, 'rclone.json');
+let rcloneConfig = {};
+
+if (fs.existsSync(rcloneConfigPath)) {
+  rcloneConfig = JSON.parse(fs.readFileSync(rcloneConfigPath));
+}
 
 program
   .command('scheduler')

@@ -3,11 +3,13 @@
   "version": "1.6.2",
   "main": "index.js",
   "bin": {
-    "rbaker": "./index.js"
+    "rbaker": "./index.js",
+    "rbaker-setup": "./setup.js"
   },
   "dependencies": {
     "commander": "^12.1.0",
     "cron": "^3.1.7",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "chalk": "^4.1.2"
   }
 }
