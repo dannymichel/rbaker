@@ -181,10 +181,10 @@ ExecStart=/usr/bin/rbaker scheduler
 Restart=always
 User=root
 Environment=NODE_ENV=production
-WorkingDirectory=/home/example_user/rbaker
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=rbaker
+WorkingDirectory=/root/.config/rbaker/
 
 [Install]
 WantedBy=multi-user.target
