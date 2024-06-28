@@ -11,9 +11,9 @@ if (!fs.existsSync(configPath)) {
 }
 const config = require(configPath);
 
-function execCommand(command, logFilePath) {
+function execCommand(command) {
   return new Promise((resolve) => {
-    exec(`${command} --log-file="${logFilePath}"`, (error, stdout, stderr) => {
+    exec(command, (error, stdout, stderr) => {
       if (error) {
         log(`Error executing command: ${stderr}`);
         resolve({ success: false, error: stderr });
@@ -33,7 +33,7 @@ async function processBatch(batch) {
     const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated`;
 
     log(`Starting backup for directory: ${dir}`);
-    const result = await execCommand(command, logFilePath);
+    const result = await execCommand(command);
     if (result.success) {
       log(`Successfully backed up directory: ${dir}`);
     } else {
@@ -43,6 +43,7 @@ async function processBatch(batch) {
     if (fs.existsSync(logFilePath)) {
       const rcloneLog = fs.readFileSync(logFilePath, 'utf8');
       log(rcloneLog);
+      fs.unlinkSync(logFilePath);
     }
 
     return result.success;
