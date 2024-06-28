@@ -11,9 +11,9 @@ if (!fs.existsSync(configPath)) {
 }
 const config = require(configPath);
 
-function execCommand(command) {
+function execCommand(command, logFilePath) {
   return new Promise((resolve) => {
-    exec(command, (error, stdout, stderr) => {
+    exec(`${command} --log-file="${logFilePath}"`, (error, stdout, stderr) => {
       if (error) {
         log(`Error executing command: ${stderr}`);
         resolve({ success: false, error: stderr });
@@ -29,15 +29,22 @@ async function processBatch(batch) {
   const promises = batch.map(async (dir) => {
     const relativePath = path.relative('/', dir);
     const destPath = `${config.remote}${relativePath}`;
-    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated --log-file "-" >> ~/.config/rbaker/logs/backup.log 2>&1`;
+    const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${relativePath.replace(/\//g, '_')}.log`);
+    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated`;
 
     log(`Starting backup for directory: ${dir}`);
-    const result = await execCommand(command);
+    const result = await execCommand(command, logFilePath);
     if (result.success) {
       log(`Successfully backed up directory: ${dir}`);
     } else {
       log(`Failed to back up directory: ${dir} - ${result.error}`);
     }
+    
+    if (fs.existsSync(logFilePath)) {
+      const rcloneLog = fs.readFileSync(logFilePath, 'utf8');
+      log(rcloneLog);
+    }
+
     return result.success;
   });
 
@@ -57,7 +64,7 @@ async function backupDirectories() {
 
     if (currentIndex < directories.length) {
       log(`Waiting for 5 minutes before processing the next batch...`);
-      await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000)); // Wait for 5 minutes
+      await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000));
     }
   }
 }
