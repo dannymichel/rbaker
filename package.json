@@ -1,6 +1,6 @@
 {
   "name": "rbaker",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "main": "index.js",
   "bin": {
     "rbaker": "./index.js"
