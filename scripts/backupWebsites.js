@@ -36,7 +36,8 @@ function backupWebsites() {
         }
         log(`Website backed up to ${tarFile}`);
         
-        const rcloneCommand = `rclone move ${tarFile} ${config.remote} --use-mmap --user-agent rclone --fast-list --min-age ${config.retention_days}d`;
+        const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${site.source.replace('/', '_')}.log`);
+        const rcloneCommand = `rclone move ${tarFile} ${config.remote} --use-mmap --user-agent rclone --fast-list --min-age ${config.retention_days}d --log-file "${logFilePath}"`;
         log(`Executing: ${rcloneCommand}`);
         
         exec(rcloneCommand, (error, stdout, stderr) => {

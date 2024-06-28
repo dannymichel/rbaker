@@ -21,7 +21,8 @@ function moveMedia() {
     config.media_directories.forEach(dir => {
       const dirName = path.basename(dir);
       const remotePath = `${config.remote}${dirName}/`;
-      const command = `rclone move "${dir}/" "${remotePath}" --use-mmap --user-agent rclone --fast-list`;
+      const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${dirName}.log`);
+      const command = `rclone move "${dir}/" "${remotePath}" --use-mmap --user-agent rclone --fast-list --log-file "${logFilePath}"`;
 
       log(`Moving media from ${dir} to ${remotePath}`);
       exec(command, (error, stdout, stderr) => {

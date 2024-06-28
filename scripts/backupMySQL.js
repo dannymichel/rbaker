@@ -51,7 +51,8 @@ function backupMySQL() {
             } else {
               log(`Backup verification succeeded: ${stdout}`);
 
-              const rcloneCommand = `rclone move ${backupFile} ${config.remote} --use-mmap --user-agent rclone --fast-list --min-age ${config.retention_days}d`;
+              const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${db}_${timestamp}.log`);
+              const rcloneCommand = `rclone move ${backupFile} ${config.remote} --use-mmap --user-agent rclone --fast-list --min-age ${config.retention_days}d --log-file "${logFilePath}"`;
               exec(rcloneCommand, (error, stdout, stderr) => {
                 if (error) {
                   log(`Error moving ${backupFile} to remote: ${stderr}`);

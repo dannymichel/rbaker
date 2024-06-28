@@ -12,14 +12,14 @@ if (!fs.existsSync(configPath)) {
 const config = require(configPath);
 
 function execCommand(command) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
         log(`Error executing command: ${stderr}`);
-        reject(error);
+        resolve({ success: false, error: stderr });
       } else {
         log(`Output: ${stdout}`);
-        resolve(stdout);
+        resolve({ success: true });
       }
     });
   });
@@ -29,17 +29,17 @@ async function processBatch(batch) {
   const promises = batch.map(async (dir) => {
     const relativePath = path.relative('/', dir);
     const destPath = `${config.remote}${relativePath}`;
-    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated`;
+    const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${relativePath.replace(/\//g, '_')}.log`);
+    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated --log-file "${logFilePath}"`;
 
-    try {
-      log(`Starting backup for directory: ${dir}`);
-      await execCommand(command);
+    log(`Starting backup for directory: ${dir}`);
+    const result = await execCommand(command);
+    if (result.success) {
       log(`Successfully backed up directory: ${dir}`);
-      return true;
-    } catch (error) {
-      log(`Failed to back up directory: ${dir}`, error);
-      return false;
+    } else {
+      log(`Failed to back up directory: ${dir} - ${result.error}`);
     }
+    return result.success;
   });
 
   const results = await Promise.all(promises);
@@ -53,10 +53,10 @@ async function backupDirectories() {
 
   while (currentIndex < directories.length) {
     const batch = directories.slice(currentIndex, currentIndex + batchSize);
-    const batchCompletedSuccessfully = await processBatch(batch);
+    await processBatch(batch);
     currentIndex += batchSize;
 
-    if (currentIndex < directories.length && !batchCompletedSuccessfully) {
+    if (currentIndex < directories.length) {
       log(`Waiting for 5 minutes before processing the next batch...`);
       await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000)); // Wait for 5 minutes
     }
