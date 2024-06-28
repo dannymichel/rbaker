@@ -2,10 +2,11 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const log = require('./logger');
 
 const configPath = path.join(os.homedir(), '.config', 'rbaker', 'websites.json');
 if (!fs.existsSync(configPath)) {
-  console.error(`Configuration file not found: ${configPath}`);
+  log(`Configuration file not found: ${configPath}`);
   process.exit(1);
 }
 const config = require(configPath);
@@ -27,22 +28,23 @@ function backupWebsites() {
       const tarFile = path.join(backupDir, `site_backup_${timestamp}.tar.bz2`);
       const command = `tar -cjf ${tarFile} -C ${site.source} .`;
       
+      log(`Backing up website from ${site.source} to ${tarFile}`);
       exec(command, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Error creating tar file: ${stderr}`);
+          log(`Error creating tar file: ${stderr}`);
           return reject(error);
         }
-        console.log(`Website backed up to ${tarFile}`);
+        log(`Website backed up to ${tarFile}`);
         
         const rcloneCommand = `rclone move ${tarFile} ${config.remote} --use-mmap --user-agent rclone --fast-list --min-age ${config.retention_days}d`;
-        console.log(`Executing: ${rcloneCommand}`);
+        log(`Executing: ${rcloneCommand}`);
         
         exec(rcloneCommand, (error, stdout, stderr) => {
           if (error) {
-            console.error(`Error moving to remote: ${stderr}`);
+            log(`Error moving to remote: ${stderr}`);
             return reject(error);
           }
-          console.log(`Website backup ${tarFile} moved to remote successfully.`);
+          log(`Website backup ${tarFile} moved to remote successfully.`);
           
           if (--pendingOperations === 0) {
             resolve();

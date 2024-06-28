@@ -2,10 +2,11 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const log = require('./logger');
 
 const configPath = path.join(os.homedir(), '.config', 'rbaker', 'directories.json');
 if (!fs.existsSync(configPath)) {
-  console.error(`Configuration file not found: ${configPath}`);
+  log(`Configuration file not found: ${configPath}`);
   process.exit(1);
 }
 const config = require(configPath);
@@ -14,10 +15,10 @@ function execCommand(command) {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing command: ${stderr}`);
+        log(`Error executing command: ${stderr}`);
         reject(error);
       } else {
-        console.log(`Output: ${stdout}`);
+        log(`Output: ${stdout}`);
         resolve(stdout);
       }
     });
@@ -31,12 +32,12 @@ async function processBatch(batch) {
     const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated`;
 
     try {
-      console.log(`Starting backup for directory: ${dir}`);
+      log(`Starting backup for directory: ${dir}`);
       await execCommand(command);
-      console.log(`Successfully backed up directory: ${dir}`);
+      log(`Successfully backed up directory: ${dir}`);
       return true;
     } catch (error) {
-      console.error(`Failed to back up directory: ${dir}`, error);
+      log(`Failed to back up directory: ${dir}`, error);
       return false;
     }
   });
@@ -56,7 +57,7 @@ async function backupDirectories() {
     currentIndex += batchSize;
 
     if (currentIndex < directories.length && !batchCompletedSuccessfully) {
-      console.log(`Waiting for 5 minutes before processing the next batch...`);
+      log(`Waiting for 5 minutes before processing the next batch...`);
       await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000)); // Wait for 5 minutes
     }
   }
