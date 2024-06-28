@@ -29,8 +29,7 @@ async function processBatch(batch) {
   const promises = batch.map(async (dir) => {
     const relativePath = path.relative('/', dir);
     const destPath = `${config.remote}${relativePath}`;
-    const logFilePath = path.join(os.homedir(), '.config', 'rbaker', 'logs', `rclone_${relativePath.replace(/\//g, '_')}.log`);
-    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated --log-file "${logFilePath}"`;
+    const command = `rclone sync "${dir}" "${destPath}" --use-mmap --user-agent rclone --fast-list --create-empty-src-dirs --local-no-check-updated --log-file "-" >> ~/.config/rbaker/logs/backup.log 2>&1`;
 
     log(`Starting backup for directory: ${dir}`);
     const result = await execCommand(command);
